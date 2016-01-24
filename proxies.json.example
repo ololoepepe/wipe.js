@@ -1,0 +1,10 @@
+Actual file name must be proxies.json.
+
+[
+    {
+        "host": "127.0.0.1",
+        "port": 8080,
+        "login": "login",
+        "password": "password"
+    }
+]

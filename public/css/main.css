@@ -1,0 +1,85 @@
+body {
+    background-color: #EEEEEE;
+    font-family: Verdana,sans-serif;
+}
+
+body.desktop, input, select {
+    font-size: 14.4px;
+}
+
+.ui-widget {
+    font-size: 14.4px !important;
+}
+
+body.mobile {
+    -moz-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    font-size: 14px;
+}
+
+.theTitle {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    overflow-x: auto;
+}
+
+.inlineTable {
+    display: inline;
+}
+
+.formLabel {
+    text-align: right;
+}
+
+.formField {
+    text-align: left;
+}
+
+.formInput {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.select {
+    background: #EAEAEA;
+    border: 1px solid #CCCCCC;
+    cursor: pointer;
+}
+
+.selectOption {
+    background: #EAEAEA;
+}
+
+.input {
+    border: 1px solid #CCCCCC;
+}
+
+.popup {
+    background-color: #DDDDDD;
+    border: 1px solid #BBBBBB;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 9950;
+    vertical-align: middle;
+    text-align: center;
+    padding: 10px 10px 10px 10px;
+    cursor: pointer;
+}
+
+.critical {
+    color: red;
+    border: 1px dotted red;
+}
+
+.warning {
+    color: #FF6600;
+    border: 1px dotted #FF6600;
+}
+
+.taskTitle {
+    font-size: 1.6em;
+}

@@ -1,0 +1,6 @@
+<li data-id="{{=task.id}}" data-started="{{=task.started}}">
+    <span class="taskTitle">[{{=task.id}}] ({{=task.plugin.title}})</span>
+    <button onclick="lord.startStopTask(this); return false;">{{? task.started}}Stop{{??}}Start{{?}}</button>
+    <button onclick="lord.removeTask(this); return false;">Remove</button>
+    <button onclick="lord.showTaskStats(this); return false;">Stats</button>
+</li>
