@@ -5,9 +5,7 @@ Actual file name must be config-dev.json.
     "site": {
         "protocol": "http",
         "domain": "localhost:8080",
-        "pathPrefix": "",
-        "dateFormat": "MM/DD/YYYY HH:mm:ss",
-        "timeOffset": 0
+        "pathPrefix": ""
     },
     "maxProxyFail": 1,
     "captcha": {

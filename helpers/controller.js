@@ -65,9 +65,7 @@ controller.baseModel = function(req) {
         site: {
             protocol: config("site.protocol", "http"),
             domain: config("site.domain", "localhost:8080"),
-            pathPrefix: config("site.pathPrefix", ""),
-            dateFormat: config("site.dateFormat", "MM/DD/YYYY hh:mm:ss"),
-            timeOffset: config("site.timeOffset", 0),
+            pathPrefix: config("site.pathPrefix", "")
         },
         deviceType: ((req && req.device.type == "desktop") ? "desktop" : "mobile"),
         plugins: Plugin.pluginIds().map(function(id) {
