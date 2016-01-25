@@ -1,5 +1,13 @@
+html {
+    height: 100%;
+}
+
 body {
     background-color: #EEEEEE;
+    background-image: url(../img/noshit.png);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: contain;
     font-family: Verdana,sans-serif;
 }
 
@@ -80,6 +88,22 @@ body.mobile {
     border: 1px dotted #FF6600;
 }
 
+.taskList {
+    margin-left: -44px;
+}
+
+.task {
+    display: table;
+    background-color: #DDDDDD;
+    border: 1px solid #CCCCCC;
+    margin: 4px;
+    padding: 4px;
+}
+
 .taskTitle {
     font-size: 1.6em;
+}
+
+.taskActions {
+    vertical-align: top;
 }

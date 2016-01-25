@@ -1,17 +1,17 @@
 var ChildProcess = require("child_process");
-var Crypto = require("crypto");
 var equal = require("deep-equal");
 var Formidable = require("formidable");
 var FS = require("q-io/fs");
 var FSSync = require("fs-ext");
-var merge = require("merge");
+var JSDOM = require("jsdom");
 var mkpath = require("mkpath");
-var Path = require("path");
 var promisify = require("promisify-node");
+var Request = require("request");
 var Util = require("util");
 
 var config = require("./config");
-var Global = require("./global");
+
+var jquery = FSSync.readFileSync(__dirname + "/../public/js/3rdparty/jquery-1.11.3.min.js", "utf8");
 
 mkpath.sync(config("tmpPath", __dirname + "/../tmp") + "/formidable");
 
@@ -291,14 +291,14 @@ var recover = function(c, err) {
     if (!c.fd)
         return Promise.reject(err);
     return flockFile(c.fd, "un").catch(function(err) {
-        Global.error(err.stack || err);
+        console.error(err.stack || err);
         return Promise.resolve();
     }).then(function() {
         if (c.noclose)
             return Promise.resolve();
         return closeFile(c.fd);
     }).catch(function(err) {
-        Global.error(err.stack || err);
+        console.error(err.stack || err);
         return Promise.resolve();
     }).then(function() {
         return Promise.reject(err);
@@ -385,4 +385,33 @@ module.exports.series = function(arr, f) {
         });
     }
     return p;
+};
+
+module.exports.post = function() {
+    var args = Array.prototype.slice.call(arguments);
+    return new Promise(function(resolve, reject) {
+        Request.post.apply(Request, args.concat(function(err, httpResponse, body) {
+            if (err)
+                return reject(err);
+            resolve(body);
+        }));
+    });
+};
+
+module.exports.getPageDom = function(url) {
+    return new Promise(function(resolve, reject) {
+        JSDOM.env({
+            url: url,
+            src: [jquery],
+            features: {
+                FetchExternalResources: ["script"],
+                ProcessExternalResources: ["script"]
+            },
+            done: function(err, window) {
+                if (err)
+                    return reject(err);
+                resolve(window);
+            }
+        });
+    });
 };

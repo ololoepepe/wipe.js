@@ -17,5 +17,10 @@ Actual file name must be config-dev.json.
         "dateFormat": "MM/DD/YYYY HH:mm:ss",
         "timeOffset": 0
     },
-    "maxProxyFail": 1
+    "maxProxyFail": 1,
+    "captcha": {
+        "google-recaptcha-v1": {
+            "key": "Your 2captcha.com key"
+        }
+    }
 }

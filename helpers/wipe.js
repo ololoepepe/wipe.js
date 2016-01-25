@@ -1,6 +1,7 @@
+var FS = require("q-io/fs");
 var FSSync = require("fs");
-var Request = require("request");
 
+var Captcha = require("../captchas");
 var config = require("./config");
 var Plugin = require("../plugins");
 var Tools = require("./tools");
@@ -28,8 +29,8 @@ var files = FSSync.readdirSync(__dirname + "/../files").filter(function(fileName
 }, {});
 
 var tasks = {};
-
 var lastProxy = -1;
+var proxySaveTimer = null;
 
 var selectProxy = function() {
     var list = proxies.filter(function(proxy) {
@@ -40,6 +41,15 @@ var selectProxy = function() {
     return list[Math.floor(Math.random() * list.length)];
 };
 
+var scheduleProxySave = function() {
+    if (proxySaveTimer)
+        return;
+    proxySaveTimer = setTimeout(function() {
+        FS.write(__dirname + "/../proxies.json", JSON.stringify(proxies));
+        proxySaveTimer = null;
+    }, 5 * Tools.Second);
+};
+
 var selectFile = function(supportedFileTypes, usedFiles) {
     var list = supportedFileTypes.reduce(function(acc, type) {
         return acc.concat(files[type] || []);
@@ -48,17 +58,6 @@ var selectFile = function(supportedFileTypes, usedFiles) {
     if (list.length < 1)
         return null;
     return list[Math.floor(Math.random() * list.length)];
-};
-
-var post = function() {
-    var args = Array.prototype.slice.call(arguments);
-    return new Promise(function(resolve, reject) {
-        Request.post.apply(Request, args.concat(function(err, httpResponse, body) {
-            if (err)
-                return reject(err);
-            resolve(body);
-        }));
-    });
 };
 
 var doWipe = function(task) {
@@ -90,18 +89,18 @@ var doWipe = function(task) {
                     o.auth.pass = proxy.password;
             }
         }
-        return post(o);
+        return Tools.post(o);
     }).then(function(body) {
-        console.log(body);
         var proxyOk = task.plugin.checkProxy(body, task);
         if (!proxyOk) {
             if (!proxy.hasOwnProperty("failCount"))
                 proxy.failCount = 0;
             proxy.failCount += 1;
+            scheduleProxySave();
         }
         next(task.plugin.checkBody(body, task));
     }).catch(function(err) {
-        console.log(err);
+        console.error(err.stack || err);
         next(false);
     });
 };
@@ -144,6 +143,12 @@ module.exports.addTask = function(fields) {
     var plugin = Plugin.plugin(fields.plugin);
     if (!plugin)
         return Promise.reject("Invalid plugin");
+    var captcha = fields.captcha || null;
+    if (captcha) {
+        captcha = Captcha.captcha(captcha);
+        if (!captcha)
+            return Promise.reject("Invalid captcha");
+    }
     if (!fields.board)
         return Promise.reject("Invalid board");
     var thread = +fields.thread;
@@ -161,7 +166,8 @@ module.exports.addTask = function(fields) {
         usedFiles: [],
         period: period,
         site: fields.site,
-        sage: ("true" == fields.sage)
+        sage: ("true" == fields.sage),
+        captcha: captcha
     };
     tasks[task.id] = task;
     if ("true" != fields.start)

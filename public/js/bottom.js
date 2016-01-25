@@ -1,32 +1,32 @@
-/*ololord global object*/
+/*wipe global object*/
 
-var lord = lord || {};
+var wipe = wipe || {};
 
 /*Variables*/
 
-lord.models = {};
-lord.partials = {};
-lord.templates = {};
+wipe.models = {};
+wipe.partials = {};
+wipe.templates = {};
 
 /**/
 
 (function() {
-    var baseModelHtml = lord.get("misc/base.json") || "";
+    var baseModelHtml = wipe.get("misc/base.json") || "";
     ["base", "partials", "templates"].forEach(function(modelName) {
-        var html = ("base" == modelName) ? baseModelHtml : lord.id("model-" + modelName).innerHTML;
-        lord.models[modelName] = JSON.parse(html);
+        var html = ("base" == modelName) ? baseModelHtml : wipe.id("model-" + modelName).innerHTML;
+        wipe.models[modelName] = JSON.parse(html);
     });
-    lord.model("partials").forEach(function(partialName) {
-        var html = lord.id("partial-" + partialName).innerHTML;
-        lord.partials[partialName] = html;
+    wipe.model("partials").forEach(function(partialName) {
+        var html = wipe.id("partial-" + partialName).innerHTML;
+        wipe.partials[partialName] = html;
     });
     var templates = {};
-    lord.model("templates").forEach(function(templateName) {
-        var html = lord.id("template-" + templateName).innerHTML;
+    wipe.model("templates").forEach(function(templateName) {
+        var html = wipe.id("template-" + templateName).innerHTML;
         templates[templateName] = html;
     });
-    lord.forIn(templates, function(html, templateName) {
-        lord.templates[templateName] = doT.template(html, {
+    wipe.forIn(templates, function(html, templateName) {
+        wipe.templates[templateName] = doT.template(html, {
             evaluate: /\{\{([\s\S]+?)\}\}/g,
             interpolate: /\{\{=([\s\S]+?)\}\}/g,
             encode: /\{\{!([\s\S]+?)\}\}/g,
@@ -38,6 +38,6 @@ lord.templates = {};
             strip: false,
             append: true,
             selfcontained: false
-        }, lord.partials);
+        }, wipe.partials);
     });
 })();

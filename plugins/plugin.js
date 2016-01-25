@@ -1,9 +1,3 @@
-var FS = require("q-io/fs");
-var FSSync = require("fs");
-var Path = require("path");
-var promisify = require("promisify-node");
-var Util = require("util");
-
 var config = require("../helpers/config");
 var Tools = require("../helpers/tools");
 

@@ -12,27 +12,27 @@ if (typeof $ != "undefined") {
     };
 }
 
-/*ololord global object*/
+/*wipe global object*/
 
-var lord = lord || {};
+var wipe = wipe || {};
 
 /*Classes*/
 
-/*constructor*/ lord.PopupMessage = function(text, options) {
+/*constructor*/ wipe.PopupMessage = function(text, options) {
     this.hideTimer = null;
     this.text = text;
     this.timeout = (options && !isNaN(+options.timeout)) ? +options.timeout : 5 * 1000;
     this.classNames = (options && typeof options.classNames == "string") ? options.classNames : "";
-    if (options && typeof options.type == "string" && lord.in(["critical", "warning"], options.type.toLowerCase()))
+    if (options && typeof options.type == "string" && wipe.in(["critical", "warning"], options.type.toLowerCase()))
         this.classNames += options.type.toLowerCase() + (("" != this.classNames) ? " " : "");
     this.html = (options && typeof options.type == "string" && options.type.toLowerCase() == "html");
     this.node = (options && typeof options.type == "string" && options.type.toLowerCase() == "node");
-    this.msg = lord.node("div");
-    lord.addClass(this.msg, "popup");
-    lord.addClass(this.msg, this.classNames);
+    this.msg = wipe.node("div");
+    wipe.addClass(this.msg, "popup");
+    wipe.addClass(this.msg, this.classNames);
     this.msg.onclick = this.hide.bind(this);
-    if (lord.popups.length > 0) {
-        var prev = lord.popups[lord.popups.length - 1];
+    if (wipe.popups.length > 0) {
+        var prev = wipe.popups[wipe.popups.length - 1];
         this.msg.style.top = (prev.msg.offsetTop + prev.msg.offsetHeight + 5) + "px";
     }
     if (this.html)
@@ -40,36 +40,36 @@ var lord = lord || {};
     else if (this.node)
         this.msg.appendChild(text);
     else
-        this.msg.appendChild(lord.node("text", text));
+        this.msg.appendChild(wipe.node("text", text));
 };
 
-/*public*/ lord.PopupMessage.prototype.show = function() {
+/*public*/ wipe.PopupMessage.prototype.show = function() {
     if (this.hideTimer)
         return;
     document.body.appendChild(this.msg);
-    lord.popups.push(this);
+    wipe.popups.push(this);
     this.hideTimer = setTimeout(this.hide.bind(this), this.timeout);
 };
 
-/*public*/ lord.PopupMessage.prototype.hide = function() {
+/*public*/ wipe.PopupMessage.prototype.hide = function() {
     if (!this.hideTimer)
         return;
     clearTimeout(this.hideTimer);
     this.hideTimer = null;
     var offsH = this.msg.offsetHeight + 5;
     document.body.removeChild(this.msg);
-    var ind = lord.popups.indexOf(this);
+    var ind = wipe.popups.indexOf(this);
     if (ind < 0)
         return;
-    lord.popups.splice(ind, 1);
-    for (var i = ind; i < lord.popups.length; ++i) {
-        var top = +lord.popups[i].msg.style.top.replace("px", "");
+    wipe.popups.splice(ind, 1);
+    for (var i = ind; i < wipe.popups.length; ++i) {
+        var top = +wipe.popups[i].msg.style.top.replace("px", "");
         top -= offsH;
-        lord.popups[i].msg.style.top = top + "px";
+        wipe.popups[i].msg.style.top = top + "px";
     }
 };
 
-/*public*/ lord.PopupMessage.prototype.resetTimeout = function(timeout) {
+/*public*/ wipe.PopupMessage.prototype.resetTimeout = function(timeout) {
     if (!this.hideTimer)
         return;
     clearTimeout(this.hideTimer);
@@ -77,56 +77,56 @@ var lord = lord || {};
     this.hideTimer = setTimeout(this.hide.bind(this), this.timeout);
 };
 
-/*public*/ lord.PopupMessage.prototype.resetText = function(text, options) {
+/*public*/ wipe.PopupMessage.prototype.resetText = function(text, options) {
     var offsH = this.msg.offsetHeight;
     this.text = text;
     this.classNames = (options && typeof options.classNames == "string") ? options.classNames : "";
-    if (options && typeof options.type == "string" && lord.in(["critical", "warning"], options.type.toLowerCase()))
+    if (options && typeof options.type == "string" && wipe.in(["critical", "warning"], options.type.toLowerCase()))
         this.classNames += options.type.toLowerCase() + (("" != this.classNames) ? " " : "");
     this.html = (options && typeof options.type == "string" && options.type.toLowerCase() == "html");
     this.node = (options && typeof options.type == "string" && options.type.toLowerCase() == "node");
     this.msg.className = "";
-    lord.addClass(this.msg, "popup");
-    lord.addClass(this.msg, this.classNames);
-    lord.removeChildren(this.msg);
+    wipe.addClass(this.msg, "popup");
+    wipe.addClass(this.msg, this.classNames);
+    wipe.removeChildren(this.msg);
     if (this.html)
         this.msg.innerHTML = text;
     else if (this.node)
         this.msg.appendChild(text);
     else
-        this.msg.appendChild(lord.node("text", text));
+        this.msg.appendChild(wipe.node("text", text));
     if (!this.hideTimer)
         return;
-    var ind = lord.popups.indexOf(this);
+    var ind = wipe.popups.indexOf(this);
     if (ind < 0)
         return;
     offsH = this.msg.offsetHeight - offsH;
-    for (var i = ind + 1; i < lord.popups.length; ++i) {
-        var top = +lord.popups[i].msg.style.top.replace("px", "");
+    for (var i = ind + 1; i < wipe.popups.length; ++i) {
+        var top = +wipe.popups[i].msg.style.top.replace("px", "");
         top += offsH;
-        lord.popups[i].msg.style.top = top + "px";
+        wipe.popups[i].msg.style.top = top + "px";
     }
 };
 
-/*constructor*/ lord.OverlayProgressBar = function(options) {
+/*constructor*/ wipe.OverlayProgressBar = function(options) {
     this.visible = false;
     this.max = (options && +options.max >= 0) ? +options.max : 100;
     this.value = (options && +options.value <= this.max) ? +options.value : 0;
-    this.mask = lord.node("div");
-    lord.addClass(this.mask, "overlayMask");
-    this.progressBar = lord.node("progress");
+    this.mask = wipe.node("div");
+    wipe.addClass(this.mask, "overlayMask");
+    this.progressBar = wipe.node("progress");
     this.progressBar.max = this.max;
     this.progressBar.value = this.value;
-    lord.addClass(this.progressBar, "overlayProgressBar");
+    wipe.addClass(this.progressBar, "overlayProgressBar");
     var _this = this;
     var createCancelButton = function(callback) {
-        _this.cancelButton = lord.node("button");
-        lord.addClass(_this.cancelButton, "button overlayProgressBarCancelButton");
+        _this.cancelButton = wipe.node("button");
+        wipe.addClass(_this.cancelButton, "button overlayProgressBarCancelButton");
         _this.cancelButton.onclick = function() {
             _this.cancelButton.disabled = true;
             callback();
         };
-        _this.cancelButton.appendChild(lord.node("text", "Cancel"));
+        _this.cancelButton.appendChild(wipe.node("text", "Cancel"));
     };
     if (options && typeof options.cancelCallback == "function")
         createCancelButton(options.cancelCallback);
@@ -174,7 +174,7 @@ var lord = lord || {};
     }
 };
 
-/*public*/ lord.OverlayProgressBar.prototype.progress = function(value) {
+/*public*/ wipe.OverlayProgressBar.prototype.progress = function(value) {
     value = +value;
     if (isNaN(value) || value < 0 || value > this.max)
         return;
@@ -184,7 +184,7 @@ var lord = lord || {};
         this.finishCallback();
 };
 
-/*public*/ lord.OverlayProgressBar.prototype.show = function() {
+/*public*/ wipe.OverlayProgressBar.prototype.show = function() {
     if (this.visible)
         return;
     this.visible = true;
@@ -194,7 +194,7 @@ var lord = lord || {};
         document.body.appendChild(this.cancelButton);
 };
 
-/*public*/ lord.OverlayProgressBar.prototype.showDelayed = function(delay) {
+/*public*/ wipe.OverlayProgressBar.prototype.showDelayed = function(delay) {
     var _this = this;
     this.mustShow = true;
     setTimeout(function() {
@@ -204,7 +204,7 @@ var lord = lord || {};
     }, delay || 0);
 };
 
-/*public*/ lord.OverlayProgressBar.prototype.hide = function() {
+/*public*/ wipe.OverlayProgressBar.prototype.hide = function() {
     this.mustShow = false;
     this.mustHide = false;
     if (!this.visible)
@@ -216,7 +216,7 @@ var lord = lord || {};
     document.body.removeChild(this.mask);
 };
 
-/*public*/ lord.OverlayProgressBar.prototype.hideDelayed = function(delay) {
+/*public*/ wipe.OverlayProgressBar.prototype.hideDelayed = function(delay) {
     var _this = this;
     this.mustHide = true;
     setTimeout(function() {
@@ -228,15 +228,15 @@ var lord = lord || {};
 
 /*Constants*/
 
-lord.Second = 1000;
-lord.Minute = 60 * lord.Second;
-lord.Hour = 60 * lord.Minute;
-lord.Day = 24 * lord.Hour;
-lord.Year = 365 * lord.Day;
-lord.Billion = 2 * 1000 * 1000 * 1000;
-lord.SettingsStoredInCookies = ["deviceType", "time", "timeZoneOffset", "captchaEngine"];
+wipe.Second = 1000;
+wipe.Minute = 60 * wipe.Second;
+wipe.Hour = 60 * wipe.Minute;
+wipe.Day = 24 * wipe.Hour;
+wipe.Year = 365 * wipe.Day;
+wipe.Billion = 2 * 1000 * 1000 * 1000;
+wipe.SettingsStoredInCookies = ["deviceType", "time", "timeZoneOffset", "captchaEngine"];
 //
-lord.keyboardMap = [
+wipe.keyboardMap = [
   "", // [0]
   "", // [1]
   "", // [2]
@@ -497,35 +497,34 @@ lord.keyboardMap = [
 
 /*Variables*/
 
-lord.popups = [];
-lord.unloading = false;
-lord.leftChain = [];
-lord.rightChain = [];
-lord.models = {};
-//lord.partials = null;
-lord.templates = {};
+wipe.popups = [];
+wipe.unloading = false;
+wipe.leftChain = [];
+wipe.rightChain = [];
+wipe.models = {};
+wipe.templates = {};
 
 /*Functions*/
 
-lord.isAudioType = function(type) {
+wipe.isAudioType = function(type) {
     return type in {"application/ogg": true, "audio/mpeg": true, "audio/ogg": true, "audio/wav": true};
 };
 
-lord.isImageType = function(type) {
+wipe.isImageType = function(type) {
     return type in {"image/gif": true, "image/jpeg": true, "image/png": true};
 };
 
-lord.isVideoType = function(type) {
+wipe.isVideoType = function(type) {
     return type in {"video/mp4": true, "video/ogg": true, "video/webm": true};
 };
 
-lord.getCookie = function(name, defValue) {
+wipe.getCookie = function(name, defValue) {
     var matches = document.cookie.match(
         new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
     return matches ? decodeURIComponent(matches[1]) : defValue;
 };
 
-lord.setCookie = function(name, value, options) {
+wipe.setCookie = function(name, value, options) {
     options = options || {};
     var expires = options.expires;
     if (typeof expires == "number" && expires) {
@@ -546,11 +545,11 @@ lord.setCookie = function(name, value, options) {
     document.cookie = updatedCookie;
 };
 
-lord.deleteCookie = function(name) {
-    lord.setCookie(name, "", {expires: -1});
+wipe.deleteCookie = function(name) {
+    wipe.setCookie(name, "", {expires: -1});
 };
 
-lord.getLocalObject = function(key, defValue) {
+wipe.getLocalObject = function(key, defValue) {
     if (!key || typeof key != "string")
         return null;
     try {
@@ -561,7 +560,7 @@ lord.getLocalObject = function(key, defValue) {
     }
 };
 
-lord.setLocalObject = function(key, value) {
+wipe.setLocalObject = function(key, value) {
     if (!key || typeof key != "string")
         return false;
     try {
@@ -575,7 +574,7 @@ lord.setLocalObject = function(key, value) {
     }
 };
 
-lord.removeLocalObject = function(key) {
+wipe.removeLocalObject = function(key) {
     if (!key || typeof key != "string")
         return;
     try {
@@ -585,7 +584,7 @@ lord.removeLocalObject = function(key) {
     }
 };
 
-lord.in = function(arr, obj, strict) {
+wipe.in = function(arr, obj, strict) {
     if (!arr || !arr.length)
         return false;
     for (var i = 0; i < arr.length; ++i) {
@@ -595,7 +594,7 @@ lord.in = function(arr, obj, strict) {
     return false;
 };
 
-lord.arr = function(obj) {
+wipe.arr = function(obj) {
     var arr = [];
     if (!obj || !obj.length)
         return arr;
@@ -604,7 +603,7 @@ lord.arr = function(obj) {
     return arr;
 };
 
-lord.hasOwnProperties = function(obj) {
+wipe.hasOwnProperties = function(obj) {
     if (!obj)
         return false;
     for (var x in obj) {
@@ -614,7 +613,7 @@ lord.hasOwnProperties = function(obj) {
     return false;
 };
 
-lord.forIn = function(obj, f) {
+wipe.forIn = function(obj, f) {
     if (!obj || typeof f != "function")
         return;
     for (var x in obj) {
@@ -623,7 +622,7 @@ lord.forIn = function(obj, f) {
     }
 };
 
-lord.mapIn = function(obj, f) {
+wipe.mapIn = function(obj, f) {
     if (!obj || typeof f != "function")
         return;
     var arr = [];
@@ -634,7 +633,7 @@ lord.mapIn = function(obj, f) {
     return arr;
 };
 
-lord.filterIn = function(obj, f) {
+wipe.filterIn = function(obj, f) {
     if (!obj || typeof f != "function")
         return;
     var nobj = {};
@@ -648,7 +647,7 @@ lord.filterIn = function(obj, f) {
     return nobj;
 };
 
-lord.toArray = function(obj) {
+wipe.toArray = function(obj) {
     var arr = [];
     var i = 0;
     for (var x in obj) {
@@ -660,20 +659,20 @@ lord.toArray = function(obj) {
     return arr;
 };
 
-lord.removeChildren = function(obj) {
+wipe.removeChildren = function(obj) {
     if (!obj || typeof obj.removeChild != "function")
         return;
     while (obj.firstChild)
         obj.removeChild(obj.firstChild);
 };
 
-lord.last = function(arr) {
+wipe.last = function(arr) {
     if (!arr || !arr.length)
         return null;
     return arr[arr.length - 1];
 };
 
-lord.equal = function(x, y) {
+wipe.equal = function(x, y) {
     var p;
     if (isNaN(x) && isNaN(y) && typeof x === "number" && typeof y === "number")
         return true;
@@ -694,7 +693,7 @@ lord.equal = function(x, y) {
         return false;
     if (x.prototype !== y.prototype)
         return false;
-    if (lord.leftChain.indexOf(x) > -1 || lord.rightChain.indexOf(y) > -1)
+    if (wipe.leftChain.indexOf(x) > -1 || wipe.rightChain.indexOf(y) > -1)
          return false;
     for (p in y) {
         if (y.hasOwnProperty(p) !== x.hasOwnProperty(p))
@@ -710,12 +709,12 @@ lord.equal = function(x, y) {
         switch (typeof (x[p])) {
         case "object":
         case "function":
-            lord.leftChain.push(x);
-            lord.rightChain.push(y);
+            wipe.leftChain.push(x);
+            wipe.rightChain.push(y);
             if (!equal(x[p], y[p]))
                 return false;
-            lord.leftChain.pop();
-            lord.rightChain.pop();
+            wipe.leftChain.pop();
+            wipe.rightChain.pop();
             break;
         default:
             if (x[p] !== y[p])
@@ -726,7 +725,7 @@ lord.equal = function(x, y) {
     return true;
 };
 
-lord.gently = function(obj, f, options) {
+wipe.gently = function(obj, f, options) {
     if (!obj || typeof f != "function")
         return Promise.reject("invalidArgumentsErrorText");
     var delay = options ? +options.delay : undefined;
@@ -805,7 +804,7 @@ lord.gently = function(obj, f, options) {
     });
 };
 
-lord.regexp = function(s) {
+wipe.regexp = function(s) {
     if (!s || typeof s != "string")
         return null;
     var m = s.match("/((\\\\/|[^/])+?)/(i(gm?|mg?)?|g(im?|mi?)?|m(ig?|gi?)?)?");
@@ -814,13 +813,13 @@ lord.regexp = function(s) {
     return new RegExp(m[1], m[3]);
 };
 
-lord.id = function(id) {
+wipe.id = function(id) {
     if (typeof id != "string" && typeof id != "number")
         return null;
     return document.getElementById(id);
 };
 
-lord.query = function(query, parent) {
+wipe.query = function(query, parent) {
     if (typeof query != "string")
         return null;
     if (!parent)
@@ -834,7 +833,7 @@ lord.query = function(query, parent) {
     return list;
 };
 
-lord.queryOne = function(query, parent) {
+wipe.queryOne = function(query, parent) {
     if (typeof query != "string")
         return null;
     if (!parent)
@@ -842,33 +841,33 @@ lord.queryOne = function(query, parent) {
     return parent.querySelector(query);
 };
 
-lord.name = function(name, parent) {
-    return lord.query("[name='" + name + "']", parent);
+wipe.name = function(name, parent) {
+    return wipe.query("[name='" + name + "']", parent);
 };
 
-lord.nameOne = function(name, parent) {
-    return lord.queryOne("[name='" + name + "']", parent);
+wipe.nameOne = function(name, parent) {
+    return wipe.queryOne("[name='" + name + "']", parent);
 };
 
-lord.contains = function(s, subs) {
+wipe.contains = function(s, subs) {
     if (typeof s == "string" && typeof subs == "string")
         return s.replace(subs, "") != s;
     if (!s || !s.length || s.length < 1)
         return false;
     for (var i = 0; i < s.length; ++i) {
-        if (lord.equal(s[i], subs))
+        if (wipe.equal(s[i], subs))
             return true;
     }
     return false;
 };
 
-lord.addClass = function(element, classNames) {
+wipe.addClass = function(element, classNames) {
     if (!element || !element.tagName || !classNames || typeof classNames != "string")
         return;
-    lord.arr(classNames.split(" ")).forEach(function(className) {
+    wipe.arr(classNames.split(" ")).forEach(function(className) {
         if (!className)
             return;
-        if (lord.hasClass(element, className))
+        if (wipe.hasClass(element, className))
             return;
         if (element.className)
             element.className += " " + className;
@@ -877,16 +876,16 @@ lord.addClass = function(element, classNames) {
     });
 };
 
-lord.hasClass = function(element, className) {
+wipe.hasClass = function(element, className) {
     if (!element || !element.tagName || !className || typeof className != "string")
         return false;
     return !!element.className.match(new RegExp("(^| )" + className + "( |$)"));
 };
 
-lord.removeClass = function(element, classNames) {
+wipe.removeClass = function(element, classNames) {
     if (!element || !element.tagName || !classNames || typeof classNames != "string")
         return;
-    lord.arr(classNames.split(" ")).forEach(function(className) {
+    wipe.arr(classNames.split(" ")).forEach(function(className) {
         if (!className)
             return;
         element.className = element.className.replace(new RegExp("(^| )" + className + "$"), "");
@@ -895,14 +894,14 @@ lord.removeClass = function(element, classNames) {
     });
 };
 
-lord.node = function(type, text) {
+wipe.node = function(type, text) {
     if (typeof type != "string")
         return null;
     type = type.toUpperCase();
     return ("TEXT" == type) ? document.createTextNode(text ? text : "") : document.createElement(type);
 };
 
-lord.toCenter = function(element, sizeHintX, sizeHintY, border) {
+wipe.toCenter = function(element, sizeHintX, sizeHintY, border) {
     var doc = document.documentElement;
     sizeHintX = +sizeHintX;
     sizeHintY = +sizeHintY;
@@ -919,17 +918,17 @@ lord.toCenter = function(element, sizeHintX, sizeHintY, border) {
     element.style.top = (doc.clientHeight / 2 - sizeHintY / 2) + "px";
 };
 
-lord.reloadPage = function() {
+wipe.reloadPage = function() {
     document.location.reload(true);
 };
 
-lord.showPopup = function(text, options) {
-    var popup = new lord.PopupMessage(text, options);
+wipe.showPopup = function(text, options) {
+    var popup = new wipe.PopupMessage(text, options);
     popup.show();
     return popup;
 };
 
-lord.showNotification = function(title, body, icon) {
+wipe.showNotification = function(title, body, icon) {
     if (!("Notification" in window))
         return;
     Notification.requestPermission(function(permission) {
@@ -942,8 +941,8 @@ lord.showNotification = function(title, body, icon) {
     });
 };
 
-lord.deviceType = function(expected) {
-    var base = lord.models.base;
+wipe.deviceType = function(expected) {
+    var base = wipe.models.base;
     if (!base)
         return expected ? false : null;
     if (expected)
@@ -951,7 +950,7 @@ lord.deviceType = function(expected) {
     return base.deviceType;
 };
 
-lord.showDialog = function(body, options) {
+wipe.showDialog = function(body, options) {
     return new Promise(function(resolve, reject) {
         var buttons = ((options && options.buttons) || ["cancel", "ok"]).map(function(button) {
             if ("ok" == button) {
@@ -1012,18 +1011,18 @@ lord.showDialog = function(body, options) {
             open: (options ? options.afterShow : undefined),
             beforeClose: function() {
                 $("body").css({ overflow: "inherit" });
-                if (lord.scrollHandler)
-                    lord.scrollHandler();
+                if (wipe.scrollHandler)
+                    wipe.scrollHandler();
             }
         });
     });
 };
 
-lord.isHashpass = function(s) {
+wipe.isHashpass = function(s) {
     return !!s.match(/([0-9a-fA-F]{8}\-){4}[0-9a-fA-F]{8}/g);
 };
 
-lord.generateImageHash = function(imageData, sizeX, sizeY) {
+wipe.generateImageHash = function(imageData, sizeX, sizeY) {
     sizeX = +sizeX;
     sizeY = +sizeY;
     if (!imageData || isNaN(sizeX) || isNaN(sizeY))
@@ -1064,7 +1063,7 @@ lord.generateImageHash = function(imageData, sizeX, sizeY) {
     return hash;
 };
 
-lord.getPlainText = function(node) {
+wipe.getPlainText = function(node) {
     if (!node)
         return "";
     function normalize(a) {
@@ -1141,48 +1140,48 @@ lord.getPlainText = function(node) {
     return normalize(recurse(node));
 };
 
-lord.activateTab = function(a) {
+wipe.activateTab = function(a) {
     if (!a)
         return;
-    var tabIndex = +lord.data("index", a.parentNode);
+    var tabIndex = +wipe.data("index", a.parentNode);
     if (isNaN(tabIndex))
         return;
     var tab = a.parentNode;
     var header = tab.parentNode;
-    var widget = lord.queryOne("div", header.parentNode);
-    var page = lord.queryOne("[data-index='" + tabIndex + "']", widget);
-    lord.arr(widget.childNodes).forEach(function(node) {
+    var widget = wipe.queryOne("div", header.parentNode);
+    var page = wipe.queryOne("[data-index='" + tabIndex + "']", widget);
+    wipe.arr(widget.childNodes).forEach(function(node) {
         if (node.nodeType != 1) //Element
             return;
         node.style.display = ((node == page) ? "block" : "none");
     });
-    lord.query("ul > li", header.parentNode).forEach(function(node) {
-        lord.removeClass(node, "activated");
+    wipe.query("ul > li", header.parentNode).forEach(function(node) {
+        wipe.removeClass(node, "activated");
     });
-    lord.addClass(tab, "activated");
+    wipe.addClass(tab, "activated");
 };
 
-lord.notificationsEnabled = function() {
-    return lord.getLocalObject("showAutoUpdateDesktopNotifications", true);
+wipe.notificationsEnabled = function() {
+    return wipe.getLocalObject("showAutoUpdateDesktopNotifications", true);
 };
 
-lord.soundEnabled = function() {
-    return lord.getLocalObject("playAutoUpdateSound", false);
+wipe.soundEnabled = function() {
+    return wipe.getLocalObject("playAutoUpdateSound", false);
 };
 
-lord.playSound = function() {
-    if (!lord.sound) {
-        lord.sound = lord.node("audio");
-        var source = lord.node("source");
+wipe.playSound = function() {
+    if (!wipe.sound) {
+        wipe.sound = wipe.node("audio");
+        var source = wipe.node("source");
         source.type = "audio/ogg";
-        source.src = "/" + lord.data("sitePathPrefix") + "audio/signal.ogg";
-        lord.sound.volume = lord.getLocalObject("soundNotificationsVolume", 100) / 100;
-        lord.sound.appendChild(source);
+        source.src = "/" + wipe.data("sitePathPrefix") + "audio/signal.ogg";
+        wipe.sound.volume = wipe.getLocalObject("soundNotificationsVolume", 100) / 100;
+        wipe.sound.appendChild(source);
     }
-    lord.sound.play();
+    wipe.sound.play();
 };
 
-lord.nearlyEqual = function(a, b, epsilon) {
+wipe.nearlyEqual = function(a, b, epsilon) {
     var absA = Math.abs(a);
     var absB = Math.abs(b);
     var diff = Math.abs(a - b);
@@ -1195,17 +1194,17 @@ lord.nearlyEqual = function(a, b, epsilon) {
     }
 };
 
-lord.hash = function(hash) {
+wipe.hash = function(hash) {
     if (typeof hash == "undefined")
         return window.location.hash.substr(1, window.location.hash.length - 1);
     hash = "" + hash;
-    if (!hash && !lord.hash())
+    if (!hash && !wipe.hash())
         return;
     window.location.hash = "";
     window.location.hash = hash;
 };
 
-lord.data = function(key, el, bubble) {
+wipe.data = function(key, el, bubble) {
     el = el || document.body;
     while (el && el.dataset) {
         if (key in el.dataset)
@@ -1215,11 +1214,11 @@ lord.data = function(key, el, bubble) {
     return undefined;
 };
 
-lord.scriptWorkaround = function(parent) {
+wipe.scriptWorkaround = function(parent) {
     if (!parent)
         parent = document;
-    lord.query("script", parent).forEach(function(script) {
-        var nscript = lord.node("script");
+    wipe.query("script", parent).forEach(function(script) {
+        var nscript = wipe.node("script");
         nscript.type = script.type;
         if (script.src)
             nscript.src = script.src;
@@ -1229,8 +1228,8 @@ lord.scriptWorkaround = function(parent) {
     });
 };
 
-lord.template = function(templateName, model, noparse) {
-    var template = lord.templates[templateName];
+wipe.template = function(templateName, model, noparse) {
+    var template = wipe.templates[templateName];
     if (!template)
         return null;
     if (!model)
@@ -1248,11 +1247,11 @@ lord.template = function(templateName, model, noparse) {
     }
     if (!node)
         return null;
-    lord.scriptWorkaround(node);
+    wipe.scriptWorkaround(node);
     return node;
 };
 
-lord.createDocumentFragment = function(html) {
+wipe.createDocumentFragment = function(html) {
     var temp = document.createElement("div");
     temp.innerHTML = html;
     if (typeof document.createDocumentFragment != "function")
@@ -1269,24 +1268,24 @@ lord.createDocumentFragment = function(html) {
     });
 };
 
-lord.createStylesheetLink = function(href, prefix) {
-    var link = lord.node("link");
+wipe.createStylesheetLink = function(href, prefix) {
+    var link = wipe.node("link");
     link.type = "text/css";
     link.rel = "stylesheet";
-    link.href = (prefix ? ("/" + lord.models.base.site.pathPrefix + "css/") : "") + href;
-    lord.queryOne("head").appendChild(link);
+    link.href = (prefix ? ("/" + wipe.models.base.site.pathPrefix + "css/") : "") + href;
+    wipe.queryOne("head").appendChild(link);
     return link;
 };
 
-lord.createScript = function(src, prefix) {
-    var script = lord.node("script");
+wipe.createScript = function(src, prefix) {
+    var script = wipe.node("script");
     script.type = "text/javascript";
-    script.src = (prefix ? ("/" + lord.models.base.site.pathPrefix + "js/") : "") + src;
-    lord.queryOne("head").appendChild(script);
+    script.src = (prefix ? ("/" + wipe.models.base.site.pathPrefix + "js/") : "") + src;
+    wipe.queryOne("head").appendChild(script);
     return script;
 };
 
-lord.compareRegisteredUserLevels = function(l1, l2) {
+wipe.compareRegisteredUserLevels = function(l1, l2) {
     if (!l1)
         l1 = null;
     if (!l2)
@@ -1311,14 +1310,14 @@ lord.compareRegisteredUserLevels = function(l1, l2) {
     }
 };
 
-lord.escaped = function(text) {
+wipe.escaped = function(text) {
     return $("<div />").text(text).html();
 };
 
-lord.model = function(modelName, mustMerge) {
+wipe.model = function(modelName, mustMerge) {
     if (Array.isArray(modelName)) {
         var models = modelName.map(function(modelName) {
-            return lord.model(modelName);
+            return wipe.model(modelName);
         });
         if (!mustMerge)
             return models;
@@ -1330,30 +1329,30 @@ lord.model = function(modelName, mustMerge) {
     } else {
         var match = modelName.match(/^board\/(\S+)$/);
         if (match) {
-            var boards = lord.models["boards"].boards;
+            var boards = wipe.models["boards"].boards;
             for (var i = 0; i < boards.length; ++i) {
                 if (match[1] == boards[i].name)
                     return { board: boards[i] };
             }
-            return lord.models["boards"].boards[match[1]];
+            return wipe.models["boards"].boards[match[1]];
         }
-        return lord.models[modelName];
+        return wipe.models[modelName];
     }
 };
 
-lord.get = function(what) {
+wipe.get = function(what) {
     var xhr = new XMLHttpRequest();
-    xhr.open("get", "/" + lordData.site.pathPrefix + what, false);
+    xhr.open("get", "/" + wipeData.site.pathPrefix + what, false);
     xhr.send(null);
     if (xhr.status === 200)
         return xhr.responseText;
     return null;
 };
 
-lord.api = function(entity, parameters, prefix) {
+wipe.api = function(entity, parameters, prefix) {
     prefix = prefix || "api";
     var query = "";
-    lord.forIn(parameters, function(val, key) {
+    wipe.forIn(parameters, function(val, key) {
         if (!Array.isArray(val))
             val = [val];
         val.forEach(function(val) {
@@ -1365,11 +1364,11 @@ lord.api = function(entity, parameters, prefix) {
     query = (query ? "?" : "") + query;
     return new Promise(function(resolve, reject) {
         $.ajax({
-            url: "/" + lord.data("sitePathPrefix") + prefix + "/" + entity + ".json" + query,
+            url: "/" + wipe.data("sitePathPrefix") + prefix + "/" + entity + ".json" + query,
             dataType: "json",
-            cache: lord.getLocalObject("apiRequestCachingEnabled", false)
+            cache: wipe.getLocalObject("apiRequestCachingEnabled", false)
         }).then(function(result) {
-            if (lord.checkError(result))
+            if (wipe.checkError(result))
                 reject(result);
             resolve(result);
         }).catch(function(err) {
@@ -1378,7 +1377,7 @@ lord.api = function(entity, parameters, prefix) {
     });
 };
 
-lord.post = function(action, formData, progressBarContext, progressBarOptions) {
+wipe.post = function(action, formData, progressBarContext, progressBarOptions) {
     var parameters = {
         type: "POST",
         data: formData,
@@ -1390,7 +1389,7 @@ lord.post = function(action, formData, progressBarContext, progressBarOptions) {
             var xhr = new XMLHttpRequest();
             if (progressBarOptions && progressBarOptions.uploadProgress)
                 xhr.upload.onprogress = progressBarOptions.uploadProgress;
-            progressBarContext.progressBar = new lord.OverlayProgressBar({ xhr: xhr });
+            progressBarContext.progressBar = new wipe.OverlayProgressBar({ xhr: xhr });
             if (progressBarOptions && progressBarOptions.delay)
                 progressBarContext.progressBar.showDelayed(progressBarOptions.delay);
             else
@@ -1399,91 +1398,91 @@ lord.post = function(action, formData, progressBarContext, progressBarOptions) {
         }
     }
     return $.ajax(action, parameters).then(function(result) {
-        if (lord.checkError(result))
+        if (wipe.checkError(result))
             return Promise.reject(result);
         return Promise.resolve(result);
     });
 };
 
-lord.now = function() {
+wipe.now = function() {
     return new Date();
 };
 
-lord.settings = function() {
+wipe.settings = function() {
     return {
-        deviceType: lord.getCookie("deviceType", "auto"),
-        time: lord.getCookie("time", "server"),
-        timeZoneOffset: lord.getCookie("timeZoneOffset", -lord.now().getTimezoneOffset()),
-        captchaEngine: { id: lord.getCookie("captchaEngine", "google-recaptcha") },
-        style: { name: lord.getLocalObject("style", "photon") },
-        codeStyle: { name: lord.getLocalObject("codeStyle", "default") },
-        shrinkPosts: lord.getLocalObject("shrinkPosts", true),
-        markupMode: lord.getLocalObject("markupMode", "EXTENDED_WAKABA_MARK,BB_CODE"),
-        stickyToolbar: lord.getLocalObject("stickyToolbar", true),
-        maxAllowedRating: lord.getLocalObject("maxAllowedRating", "R-18G"),
-        hidePostformRules: lord.getLocalObject("hidePostformRules", false),
-        minimalisticPostform: lord.getLocalObject("minimalisticPostform", lord.deviceType("mobile")),
-        hiddenBoards: lord.getLocalObject("hiddenBoards", []),
-        autoUpdateThreadsByDefault: lord.getLocalObject("autoUpdateThreadsByDefault", false),
-        autoUpdateInterval: lord.getLocalObject("autoUpdateInterval", 15),
-        showAutoUpdateDesktopNotifications: lord.getLocalObject("showAutoUpdateDesktopNotifications", true),
-        playAutoUpdateSound: lord.getLocalObject("playAutoUpdateSound", false),
-        soundNotificationsVolume: lord.getLocalObject("soundNotificationsVolume", 100),
-        signOpPostLinks: lord.getLocalObject("signOpPostLinks", true),
-        signOwnPostLinks: lord.getLocalObject("signOwnPostLinks", true),
-        showLeafButtons: lord.getLocalObject("showLeafButtons", true),
-        leafThroughImagesOnly: lord.getLocalObject("leafThroughImagesOnly", false),
-        imageZoomSensitivity: lord.getLocalObject("imageZoomSensitivity", 25),
-        defaultAudioVideoVolume: lord.getLocalObject("defaultAudioVideoVolume", 100),
-        rememberAudioVideoVolume: lord.getLocalObject("rememberAudioVideoVolume", true),
-        playAudioVideoImmediately: lord.getLocalObject("playAudioVideoImmediately", true),
-        loopAudioVideo: lord.getLocalObject("loopAudioVideo", true),
-        quickReplyAction: lord.getLocalObject("quickReplyAction", "goto_thread"),
-        moveToPostOnReplyInThread: lord.getLocalObject("moveToPostOnReplyInThread", false),
-        checkFileExistence: lord.getLocalObject("checkFileExistence", true),
-        showAttachedFilePreview: lord.getLocalObject("showAttachedFilePreview", true),
-        addToFavoritesOnReply: lord.getLocalObject("addToFavoritesOnReply", false),
-        stripExifFromJpeg: lord.getLocalObject("stripExifFromJpeg", true),
-        hideTripcodes: lord.getLocalObject("hideTripcodes", false),
-        hideUserNames: lord.getLocalObject("hideUserNames", false),
-        strikeOutHiddenPostLinks: lord.getLocalObject("strikeOutHiddenPostLinks", true),
-        spellsEnabled: lord.getLocalObject("spellsEnabled", true),
-        showNewPosts: lord.getLocalObject("showNewPosts", true),
-        hotkeysEnabled: lord.getLocalObject("hotkeysEnabled", true),
-        userCssEnabled: lord.getLocalObject("userCssEnabled", true),
-        userJavaScriptEnabled: lord.getLocalObject("userJavaScriptEnabled", true),
-        sourceHighlightingEnabled: lord.getLocalObject("sourceHighlightingEnabled", false),
-        chatEnabled: lord.getLocalObject("chatEnabled", true),
-        closeFilesByClickingOnly: lord.getLocalObject("closeFilesByClickingOnly", false),
-        viewPostPreviewDelay: lord.getLocalObject("viewPostPreviewDelay", 200),
-        apiRequestCachingEnabled: lord.getLocalObject("apiRequestCachingEnabled", false),
-        bannersMode: lord.getLocalObject("bannersMode", "random")
+        deviceType: wipe.getCookie("deviceType", "auto"),
+        time: wipe.getCookie("time", "server"),
+        timeZoneOffset: wipe.getCookie("timeZoneOffset", -wipe.now().getTimezoneOffset()),
+        captchaEngine: { id: wipe.getCookie("captchaEngine", "google-recaptcha") },
+        style: { name: wipe.getLocalObject("style", "photon") },
+        codeStyle: { name: wipe.getLocalObject("codeStyle", "default") },
+        shrinkPosts: wipe.getLocalObject("shrinkPosts", true),
+        markupMode: wipe.getLocalObject("markupMode", "EXTENDED_WAKABA_MARK,BB_CODE"),
+        stickyToolbar: wipe.getLocalObject("stickyToolbar", true),
+        maxAllowedRating: wipe.getLocalObject("maxAllowedRating", "R-18G"),
+        hidePostformRules: wipe.getLocalObject("hidePostformRules", false),
+        minimalisticPostform: wipe.getLocalObject("minimalisticPostform", wipe.deviceType("mobile")),
+        hiddenBoards: wipe.getLocalObject("hiddenBoards", []),
+        autoUpdateThreadsByDefault: wipe.getLocalObject("autoUpdateThreadsByDefault", false),
+        autoUpdateInterval: wipe.getLocalObject("autoUpdateInterval", 15),
+        showAutoUpdateDesktopNotifications: wipe.getLocalObject("showAutoUpdateDesktopNotifications", true),
+        playAutoUpdateSound: wipe.getLocalObject("playAutoUpdateSound", false),
+        soundNotificationsVolume: wipe.getLocalObject("soundNotificationsVolume", 100),
+        signOpPostLinks: wipe.getLocalObject("signOpPostLinks", true),
+        signOwnPostLinks: wipe.getLocalObject("signOwnPostLinks", true),
+        showLeafButtons: wipe.getLocalObject("showLeafButtons", true),
+        leafThroughImagesOnly: wipe.getLocalObject("leafThroughImagesOnly", false),
+        imageZoomSensitivity: wipe.getLocalObject("imageZoomSensitivity", 25),
+        defaultAudioVideoVolume: wipe.getLocalObject("defaultAudioVideoVolume", 100),
+        rememberAudioVideoVolume: wipe.getLocalObject("rememberAudioVideoVolume", true),
+        playAudioVideoImmediately: wipe.getLocalObject("playAudioVideoImmediately", true),
+        loopAudioVideo: wipe.getLocalObject("loopAudioVideo", true),
+        quickReplyAction: wipe.getLocalObject("quickReplyAction", "goto_thread"),
+        moveToPostOnReplyInThread: wipe.getLocalObject("moveToPostOnReplyInThread", false),
+        checkFileExistence: wipe.getLocalObject("checkFileExistence", true),
+        showAttachedFilePreview: wipe.getLocalObject("showAttachedFilePreview", true),
+        addToFavoritesOnReply: wipe.getLocalObject("addToFavoritesOnReply", false),
+        stripExifFromJpeg: wipe.getLocalObject("stripExifFromJpeg", true),
+        hideTripcodes: wipe.getLocalObject("hideTripcodes", false),
+        hideUserNames: wipe.getLocalObject("hideUserNames", false),
+        strikeOutHiddenPostLinks: wipe.getLocalObject("strikeOutHiddenPostLinks", true),
+        spellsEnabled: wipe.getLocalObject("spellsEnabled", true),
+        showNewPosts: wipe.getLocalObject("showNewPosts", true),
+        hotkeysEnabled: wipe.getLocalObject("hotkeysEnabled", true),
+        userCssEnabled: wipe.getLocalObject("userCssEnabled", true),
+        userJavaScriptEnabled: wipe.getLocalObject("userJavaScriptEnabled", true),
+        sourceHighlightingEnabled: wipe.getLocalObject("sourceHighlightingEnabled", false),
+        chatEnabled: wipe.getLocalObject("chatEnabled", true),
+        closeFilesByClickingOnly: wipe.getLocalObject("closeFilesByClickingOnly", false),
+        viewPostPreviewDelay: wipe.getLocalObject("viewPostPreviewDelay", 200),
+        apiRequestCachingEnabled: wipe.getLocalObject("apiRequestCachingEnabled", false),
+        bannersMode: wipe.getLocalObject("bannersMode", "random")
     };
 };
 
-lord.setSettings = function(model) {
+wipe.setSettings = function(model) {
     if (!model)
         return;
-    lord.forIn(model, function(val, key) {
-        if (lord.SettingsStoredInCookies.indexOf(key) >= 0) {
-            lord.setCookie(key, val, {
-                "expires": lord.Billion,
+    wipe.forIn(model, function(val, key) {
+        if (wipe.SettingsStoredInCookies.indexOf(key) >= 0) {
+            wipe.setCookie(key, val, {
+                "expires": wipe.Billion,
                 "path": "/"
             });
         } else {
-            lord.setLocalObject(key, val);
+            wipe.setLocalObject(key, val);
         }
     });
 };
 
-lord.checkError = function(result) {
+wipe.checkError = function(result) {
     return (["object", "number", "boolean"].indexOf(typeof result) < 0)
         || (result && (result.errorMessage || result.ban));
 };
 
-lord.handleError = function(error) {
+wipe.handleError = function(error) {
     console.log(error);
-    if (lord.unloading)
+    if (wipe.unloading)
         return;
     var text;
     if (error) {
@@ -1522,10 +1521,10 @@ lord.handleError = function(error) {
     } else {
         text = "Unknown error";
     }
-    lord.showPopup(text, {type: "critical"});
+    wipe.showPopup(text, {type: "critical"});
 };
 
-lord.toMap = function(arr, keyGenerator) {
+wipe.toMap = function(arr, keyGenerator) {
     var map = {};
     arr.forEach(function(item) {
         map[keyGenerator(item)] = item;
@@ -1533,7 +1532,7 @@ lord.toMap = function(arr, keyGenerator) {
     return map;
 };
 
-lord.readAs = function(blob, method) {
+wipe.readAs = function(blob, method) {
     switch (method) {
     case "ArrayBuffer":
     case "BinaryString":
