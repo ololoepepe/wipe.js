@@ -1,6 +1,6 @@
 var FSSync = require("fs");
-var Request = require("request");
 
+var Captcha = require("../captchas");
 var config = require("./config");
 var Plugin = require("../plugins");
 var Tools = require("./tools");
@@ -50,17 +50,6 @@ var selectFile = function(supportedFileTypes, usedFiles) {
     return list[Math.floor(Math.random() * list.length)];
 };
 
-var post = function() {
-    var args = Array.prototype.slice.call(arguments);
-    return new Promise(function(resolve, reject) {
-        Request.post.apply(Request, args.concat(function(err, httpResponse, body) {
-            if (err)
-                return reject(err);
-            resolve(body);
-        }));
-    });
-};
-
 var doWipe = function(task) {
     if (!task || !task.started)
         return;
@@ -90,9 +79,8 @@ var doWipe = function(task) {
                     o.auth.pass = proxy.password;
             }
         }
-        return post(o);
+        return Tools.post(o);
     }).then(function(body) {
-        console.log(body);
         var proxyOk = task.plugin.checkProxy(body, task);
         if (!proxyOk) {
             if (!proxy.hasOwnProperty("failCount"))
@@ -101,7 +89,7 @@ var doWipe = function(task) {
         }
         next(task.plugin.checkBody(body, task));
     }).catch(function(err) {
-        console.log(err);
+        console.error(err.stack || err);
         next(false);
     });
 };
@@ -144,6 +132,12 @@ module.exports.addTask = function(fields) {
     var plugin = Plugin.plugin(fields.plugin);
     if (!plugin)
         return Promise.reject("Invalid plugin");
+    var captcha = fields.captcha || null;
+    if (captcha) {
+        captcha = Captcha.captcha(captcha);
+        if (!captcha)
+            return Promise.reject("Invalid captcha");
+    }
     if (!fields.board)
         return Promise.reject("Invalid board");
     var thread = +fields.thread;
@@ -161,7 +155,8 @@ module.exports.addTask = function(fields) {
         usedFiles: [],
         period: period,
         site: fields.site,
-        sage: ("true" == fields.sage)
+        sage: ("true" == fields.sage),
+        captcha: captcha
     };
     tasks[task.id] = task;
     if ("true" != fields.start)

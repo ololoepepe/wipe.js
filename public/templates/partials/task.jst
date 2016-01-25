@@ -1,6 +1,12 @@
-<li data-id="{{=task.id}}" data-started="{{=task.started}}">
+<li class="task" data-id="{{=task.id}}" data-started="{{=task.started}}">
     <span class="taskTitle">[{{=task.id}}] ({{=task.plugin.title}})</span>
-    <button onclick="lord.startStopTask(this); return false;">{{? task.started}}Stop{{??}}Start{{?}}</button>
-    <button onclick="lord.removeTask(this); return false;">Remove</button>
-    <button onclick="lord.showTaskStats(this); return false;">Stats</button>
+    <span class="taskActions">
+        <button onclick="wipe.startStopTask(this); return false;">{{? task.started}}Stop{{??}}Start{{?}}</button>
+        <button onclick="wipe.removeTask(this); return false;">Remove</button>
+        <input id="statsButton{{=task.id}}" type="checkbox"
+               onclick="wipe.showTaskStats(this);" /><label for="statsButton{{=task.id}}">Stats</label>
+    </span>
+    <div name="stats" style="display: none;">
+        Coming soon...
+    </div>
 </li>

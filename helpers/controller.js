@@ -1,15 +1,9 @@
-var Crypto = require("crypto");
 var dot = require("dot");
 var FS = require("q-io/fs");
-var FSSync = require("fs");
 var merge = require("merge");
-var mkpath = require("mkpath");
-var moment = require("moment");
-var Path = require("path");
-var Util = require("util");
 
+var Captcha = require("../captchas");
 var config = require("./config");
-var Global = require("./global");
 var Plugin = require("../plugins");
 
 var partials = {};
@@ -81,6 +75,13 @@ controller.baseModel = function(req) {
             return {
                 id: id,
                 title: plugin.title
+            };
+        }),
+        captchas: Captcha.captchaIds().map(function(id) {
+            var captcha = Captcha.captcha(id);
+            return {
+                id: id,
+                title: captcha.title
             };
         })
     };

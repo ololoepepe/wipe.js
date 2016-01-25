@@ -1,11 +1,6 @@
 var express = require("express");
 var FS = require("q-io/fs");
-var FSSync = require("fs");
-var HTTP = require("q-io/http");
-var moment = require("moment");
-var Util = require("util");
 
-var config = require("../helpers/config");
 var controller = require("../helpers/controller");
 var Tools = require("../helpers/tools");
 var Wipe = require("../helpers/wipe");
@@ -19,6 +14,10 @@ var mapTask = function(task) {
             id: task.plugin.id,
             title: task.plugin.title
         },
+        captcha: (task.captcha ? {
+            id: task.captcha.id,
+            title: task.captcha.title
+        } : null),
         board: task.board,
         thread: task.thread,
         started: task.started

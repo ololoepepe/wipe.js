@@ -25,6 +25,19 @@
                 </tr>
                 <tr>
                     <td class="formLabel">
+                        <b>Captcha:</b>
+                    </td>
+                    <td class="formField">
+                        <select name="captcha" class="select">
+                            <option class="selectOption" value="" selected="true">----</option>
+                            {{~it.captchas :captcha}}
+                                <option class="selectOption" value="{{=captcha.id}}">{{=captcha.title}}</option>
+                            {{~}}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formLabel">
                         <b>Site:</b>
                     </td>
                     <td class="formField">

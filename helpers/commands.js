@@ -2,7 +2,6 @@ var ReadLine = require("readline");
 var ReadLineSync = require("readline-sync");
 
 var config = require("./config");
-var Global = require("./global");
 var Tools = require("./tools");
 
 var rl = ReadLine.createInterface({
@@ -101,12 +100,12 @@ var init = function() {
             rl.resume();
             rl.prompt();
         }).catch(function(err) {
-            Global.error(err.stack ? err.stack : err);
+            console.error(err.stack ? err.stack : err);
             rl.resume();
             rl.prompt();
         });
     }).on("error", function(err) {
-        Global.error(err);
+        console.error(err);
     });
     return rl;
 };
