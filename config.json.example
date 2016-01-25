@@ -1,14 +1,6 @@
 Actual file name must be config-dev.json.
 
 {
-    "log": {
-        "targets": [
-            "console",
-            "file"
-        ],
-        "maxSize": 1048576,
-        "backups": 100
-    },
     "serverPport": 8080,
     "site": {
         "protocol": "http",

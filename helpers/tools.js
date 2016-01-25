@@ -11,9 +11,13 @@ var Util = require("util");
 
 var config = require("./config");
 
+var tmpPath = function() {
+    return config("tmpPath", __dirname + "/../tmp");
+};
+
 var jquery = FSSync.readFileSync(__dirname + "/../public/js/3rdparty/jquery-1.11.3.min.js", "utf8");
 
-mkpath.sync(config("tmpPath", __dirname + "/../tmp") + "/formidable");
+mkpath.sync(tmpPath() + "/formidable");
 
 Object.defineProperty(module.exports, "Billion", { value: (2 * 1000 * 1000 * 1000) });
 Object.defineProperty(module.exports, "Second", { value: 1000 });
@@ -237,9 +241,11 @@ module.exports.splitCommand = function(cmd) {
     };
 };
 
+module.exports.tmpPath = tmpPath;
+
 module.exports.parseForm = function(req) {
     var form = new Formidable.IncomingForm();
-    form.uploadDir = config("tmpPath", __dirname + "/../tmp") + "/formidable";
+    form.uploadDir = tmpPath() + "/formidable";
     form.hash = "sha1";
     form.maxFieldsSize = 5 * 1024 * 1024;
     return new Promise(function(resolve, reject) {
