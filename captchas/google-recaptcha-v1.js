@@ -21,7 +21,7 @@ captcha.solve = function(window, container) {
         });
     };
     var key = config("captcha.google-recaptcha-v1.key");
-    var fileName = __dirname + "/../tmp/captcha/" + UUID.v4();
+    var fileName = Tools.tmpPath() + "/captcha/" + UUID.v4();
     return f().then(function(img) {
         return HTTP.request({
             method: "GET",

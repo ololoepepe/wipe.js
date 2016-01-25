@@ -1,6 +1,6 @@
 {
   "name": "wipe.js",
-  "version": "0.1.0-pa2",
+  "version": "0.1.0-pa3",
   "description": "Imageboard wiping tool with web interface",
   "main": "app.js",
   "scripts": {
