@@ -1,4 +1,4 @@
-var lordData = {
+var wipeData = {
     site: {
         pathPrefix: "" /*MUST be present*/
     }
