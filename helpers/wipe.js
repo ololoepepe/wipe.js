@@ -1,3 +1,4 @@
+var FS = require("q-io/fs");
 var FSSync = require("fs");
 
 var Captcha = require("../captchas");
@@ -28,8 +29,8 @@ var files = FSSync.readdirSync(__dirname + "/../files").filter(function(fileName
 }, {});
 
 var tasks = {};
-
 var lastProxy = -1;
+var proxySaveTimer = null;
 
 var selectProxy = function() {
     var list = proxies.filter(function(proxy) {
@@ -38,6 +39,15 @@ var selectProxy = function() {
     if (list.length < 1)
         return null;
     return list[Math.floor(Math.random() * list.length)];
+};
+
+var scheduleProxySave = function() {
+    if (proxySaveTimer)
+        return;
+    proxySaveTimer = setTimeout(function() {
+        FS.write(__dirname + "/../proxies.json", JSON.stringify(proxies));
+        proxySaveTimer = null;
+    }, 5 * Tools.Second);
 };
 
 var selectFile = function(supportedFileTypes, usedFiles) {
@@ -86,6 +96,7 @@ var doWipe = function(task) {
             if (!proxy.hasOwnProperty("failCount"))
                 proxy.failCount = 0;
             proxy.failCount += 1;
+            scheduleProxySave();
         }
         next(task.plugin.checkBody(body, task));
     }).catch(function(err) {
