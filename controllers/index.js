@@ -18,9 +18,15 @@ var mapTask = function(task) {
             id: task.captcha.id,
             title: task.captcha.title
         } : null),
+        solver: (task.solver ? {
+            id: task.solver.id,
+            title: task.solver.title
+        } : null),
         board: task.board,
         thread: task.thread,
-        started: task.started
+        started: task.started,
+        winCount: task.winCount,
+        failCount: task.failCount
     };
 };
 

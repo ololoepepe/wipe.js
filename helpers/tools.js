@@ -304,6 +304,17 @@ module.exports.series = function(arr, f) {
     return p;
 };
 
+module.exports.get = function() {
+    var args = Array.prototype.slice.call(arguments);
+    return new Promise(function(resolve, reject) {
+        Request.get.apply(Request, args.concat(function(err, httpResponse, body) {
+            if (err)
+                return reject(err);
+            resolve(body);
+        }));
+    });
+};
+
 module.exports.post = function() {
     var args = Array.prototype.slice.call(arguments);
     return new Promise(function(resolve, reject) {
@@ -331,4 +342,16 @@ module.exports.getPageDom = function(url) {
             }
         });
     });
+};
+
+module.exports.requestData = function(data, proxy) {
+    if (proxy) {
+        data.proxy = proxy.host + (proxy.port ? (":" + proxy.port) : "");
+        if (proxy.login) {
+            data.auth = { user: proxy.login };
+            if (proxy.password)
+                data.auth.pass = proxy.password;
+        }
+    }
+    return data;
 };

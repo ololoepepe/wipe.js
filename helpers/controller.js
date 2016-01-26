@@ -1,10 +1,13 @@
 var dot = require("dot");
 var FS = require("q-io/fs");
 var merge = require("merge");
+var Util = require("util");
 
 var Captcha = require("../captchas");
 var config = require("./config");
+var Generator = require("../generators");
 var Plugin = require("../plugins");
+var Solver = require("../solvers");
 
 var partials = {};
 var templates = {};
@@ -80,6 +83,20 @@ controller.baseModel = function(req) {
             return {
                 id: id,
                 title: captcha.title
+            };
+        }),
+        solvers: Solver.solverIds().map(function(id) {
+            var solver = Solver.solver(id);
+            return {
+                id: id,
+                title: solver.title
+            };
+        }),
+        generators: Generator.generatorIds().map(function(id) {
+            var generator = Generator.generator(id);
+            return {
+                id: id,
+                title: generator.title
             };
         })
     };

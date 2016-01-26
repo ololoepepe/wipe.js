@@ -25,32 +25,29 @@ plugin.mustAttachFile = function(task) {
     return 0 == task.thread;
 };
 
-plugin.getFormData = function(task, file) {
-    var o = {
-        board: task.board,
-        replythread: task.thread,
-        message: UUID.v4()
+plugin.captchaContainerQuery = function(task) {
+    return "#postform";
+};
+
+plugin.formFieldNames = function(task) {
+    return {
+        board: "board",
+        thread: "replythread",
+        text: "message",
+        subject: "subject",
+        email: "em",
+        file: "imagefile"
     };
-    if (task.sage)
-        o.em = "sage";
-    if (this.mustAttachFile(task))
-        o.imagefile = FSSync.createReadStream(file);
-    if (!task.captcha)
-        return Promise.resolve(o);
-    var url = getSite(task) + task.board;
-    if (task.thread)
-        url += `/res/${task.thread}.html`;
-    return Tools.getPageDom(url).then(function(window) {
-        return task.captcha.solve(window, window.jQuery("#postform")[0]);
-    }).then(function(solved) {
-        Tools.forIn(solved, function(val, key) {
-            o[key] = val;
-        });
-        return Promise.resolve(o);
-    });
 };
 
 plugin.getUrl = function(task) {
+    var url = getSite(task) + task.board;
+    if (task.thread)
+        url += `/res/${task.thread}.html`;
+    return url;
+};
+
+plugin.postUrl = function(task) {
     return `${getSite(task)}board.php`;
 };
 

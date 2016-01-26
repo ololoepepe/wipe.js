@@ -27,8 +27,16 @@ var Captcha = function(id, title, options) {
     return defineSetting(this, name, def);
 };
 
-/*public*/ Captcha.prototype.solve = function(window, container) {
-    return Promise.resolve("");
+/*public*/ Captcha.prototype.getData = function(window, container) {
+    return Promise.resolve(null);
+};
+
+/*public*/ Captcha.prototype.getFields = function(data, window, container) {
+    return Promise.resolve({});
+};
+
+/*public*/ Captcha.prototype.getUrl = function() {
+    return "";
 };
 
 Captcha.captcha = function(id) {
@@ -43,7 +51,7 @@ Captcha.addCaptcha = function(captcha) {
 
 Captcha.captchaIds = function() {
     return Tools.toArray(captchas).sort(function(p1, p2) {
-        return (p1.name < p2.name) ? -1 : 1;
+        return (p1.id < p2.id) ? -1 : 1;
     }).map(function(captcha) {
         return captcha.id;
     });

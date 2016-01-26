@@ -3,7 +3,9 @@ var FSSync = require("fs");
 
 var Captcha = require("../captchas");
 var config = require("./config");
+var Generator = require("../generators");
 var Plugin = require("../plugins");
+var Solver = require("../solvers");
 var Tools = require("./tools");
 
 var proxies = require("../proxies.json");
@@ -76,9 +78,9 @@ var doWipe = function(task) {
     };
     if (task.plugin.mustAttachFile(task))
         task.usedFiles.push(file);
-    task.plugin.getFormData(task, file).then(function(formData) {
+    task.plugin.getFormData(task, file, proxy).then(function(formData) {
         var o = {
-            url: task.plugin.getUrl(task),
+            url: task.plugin.postUrl(task),
             formData: formData
         };
         if (proxy) {
@@ -98,7 +100,11 @@ var doWipe = function(task) {
             proxy.failCount += 1;
             scheduleProxySave();
         }
-        next(task.plugin.checkBody(body, task));
+        var ok = task.plugin.checkBody(body, task);
+        if (!task.hasOwnProperty(ok ? "winCount" : "failCount"))
+            task[ok ? "winCount" : "failCount"] = 0;
+        task[ok ? "winCount" : "failCount"] += 1;
+        next(ok);
     }).catch(function(err) {
         console.error(err.stack || err);
         next(false);
@@ -149,6 +155,17 @@ module.exports.addTask = function(fields) {
         if (!captcha)
             return Promise.reject("Invalid captcha");
     }
+    var solver = fields.solver || null;
+    if (captcha && !solver)
+        return Promise.reject("No captcha solving service specified");
+    if (solver) {
+        solver = Solver.solver(solver);
+        if (!solver)
+            return Promise.reject("Invalid captcha solving service");
+    }
+    var generator = Generator.generator(fields.generator);
+    if (!generator)
+        return Promise.reject("Invalid text generator");
     if (!fields.board)
         return Promise.reject("Invalid board");
     var thread = +fields.thread;
@@ -167,7 +184,9 @@ module.exports.addTask = function(fields) {
         period: period,
         site: fields.site,
         sage: ("true" == fields.sage),
-        captcha: captcha
+        captcha: captcha,
+        solver: solver,
+        generator: generator
     };
     tasks[task.id] = task;
     if ("true" != fields.start)

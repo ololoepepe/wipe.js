@@ -35,11 +35,71 @@ var Plugin = function(id, title, options) {
     return task.thread > 0;
 };
 
-/*public*/ Plugin.prototype.getFormData = function(task, file) {
-    return {};
+/*public*/ Plugin.prototype.captchaContainerQuery = function(task) {
+    return "";
+};
+
+/*public*/ Plugin.prototype.formFieldNames = function(task) {
+    return {
+        board: null,
+        thread: null,
+        text: null,
+        subject: null,
+        email: null,
+        name: null,
+        file: null
+    };
+};
+
+/*public*/ Plugin.prototype.getFormData = function(task, file, proxy) {
+    var o = {};
+    var fieldNames = this.formFieldNames(task);
+    if (fieldNames.board)
+        o[fieldNames.board] = task.board;
+    if (fieldNames.thread)
+        o[fieldNames.thread] = task.thread;
+    if (fieldNames.text)
+        o[fieldNames.text] = task.generator.generate(task);
+    if (task.sage && fieldNames.subject)
+        o[fieldNames.subject] = "sage";
+    //TODO
+    /*if (fieldNames.name)
+        o[fieldNames.name] = "";
+    if (fieldNames.subject)
+        o[fieldNames.subject] = "";*/
+    if (this.mustAttachFile(task) && fieldNames.file)
+        o[fieldNames.file] = FSSync.createReadStream(file);
+    if (!task.captcha)
+        return Promise.resolve(o);
+    var ccq = this.captchaContainerQuery(task);
+    var c = {};
+    var p;
+    if (!task.captcha.getUrl()) {
+        p = Tools.getPageDom(this.getUrl(task)).then(function(window) {
+            c.window = window;
+            c.container = window.jQuery(ccq)[0];
+            return task.captcha.getData(window, c.container);
+        });
+    } else {
+        p = Tools.get(Tools.requestData({ url: task.captcha.getUrl() }, proxy));
+    }
+    return p.then(function(data) {
+        return task.solver.solve(data);
+    }).then(function(data) {
+        return task.captcha.getFields(data, c.window, c.container);
+    }).then(function(fields) {
+        Tools.forIn(fields, function(val, key) {
+            o[key] = val;
+        });
+        return Promise.resolve(o);
+    });
 };
 
 /*public*/ Plugin.prototype.getUrl = function(task) {
+    return "";
+};
+
+/*public*/ Plugin.prototype.postUrl = function(task) {
     return "";
 };
 
@@ -63,7 +123,7 @@ Plugin.addPlugin = function(plugin) {
 
 Plugin.pluginIds = function() {
     return Tools.toArray(plugins).sort(function(p1, p2) {
-        return (p1.name < p2.name) ? -1 : 1;
+        return (p1.id < p2.id) ? -1 : 1;
     }).map(function(plugin) {
         return plugin.id;
     });

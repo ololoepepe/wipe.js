@@ -7,6 +7,8 @@
                onclick="wipe.showTaskStats(this);" /><label for="statsButton{{=task.id}}">Stats</label>
     </span>
     <div name="stats" style="display: none;">
-        Coming soon...
+        <b>Win:</b> <span name="win">{{ out += (task.winCount || 0); }}</span>
+        <br />
+        <b>Fail:</b> <span name="fail">{{ out += (task.failCount || 0); }}</span>
     </div>
 </li>
