@@ -27,7 +27,7 @@ var Generator = function(id, title, options) {
     return defineSetting(this, name, def);
 };
 
-/*public*/ Generator.prototype.generate = function(task) {
+/*public*/ Generator.prototype.generate = function(task, field) {
     return Promise.resolve("");
 };
 

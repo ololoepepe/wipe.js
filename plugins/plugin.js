@@ -58,15 +58,16 @@ var Plugin = function(id, title, options) {
         o[fieldNames.board] = task.board;
     if (fieldNames.thread)
         o[fieldNames.thread] = task.thread;
-    if (fieldNames.text)
-        o[fieldNames.text] = task.generator.generate(task);
-    if (task.sage && fieldNames.subject)
-        o[fieldNames.subject] = "sage";
-    //TODO
-    /*if (fieldNames.name)
-        o[fieldNames.name] = "";
-    if (fieldNames.subject)
-        o[fieldNames.subject] = "";*/
+    if (fieldNames.text && task.generatorOptions.text)
+        o[fieldNames.text] = task.generator.generate(task, "text");
+    if (task.sage && fieldNames.email)
+        o[fieldNames.email] = "sage";
+    else if (fieldNames.email && task.generatorOptions.email)
+        o[fieldNames.email] = task.generator.generate(task, "email");
+    if (fieldNames.name && task.generatorOptions.name)
+        o[fieldNames.name] = task.generator.generate(task, "name");
+    if (fieldNames.subject && task.generatorOptions.subject)
+        o[fieldNames.subject] = task.generator.generate(task, "subject");
     if (this.mustAttachFile(task) && fieldNames.file)
         o[fieldNames.file] = FSSync.createReadStream(file);
     if (!task.captcha)

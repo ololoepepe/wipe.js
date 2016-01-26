@@ -186,7 +186,13 @@ module.exports.addTask = function(fields) {
         sage: ("true" == fields.sage),
         captcha: captcha,
         solver: solver,
-        generator: generator
+        generator: generator,
+        generatorOptions: {
+            text: !!fields.generateText,
+            email: !!fields.generateEmail,
+            name: !!fields.generateName,
+            subject: !!fields.generateSubject
+        }
     };
     tasks[task.id] = task;
     if ("true" != fields.start)

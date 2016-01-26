@@ -4,7 +4,7 @@ var Generator = require("./generator");
 
 var generator = new Generator("uuid", "UUID");
 
-generator.generate = function(task) {
+generator.generate = function(task, field) {
     return UUID.v4();
 };
 
