@@ -67,17 +67,21 @@ var doWipe = function(task) {
         return;
     var proxy = (proxies.length > 0) ? selectProxy() : null;
     var file = selectFile(task.plugin.supportedFileTypes(task), task.usedFiles);
-    var next = function(ok) {
-        var prop = ok ? "win" : "fail";
-        if (!task.hasOwnProperty(prop))
-            task[prop] = 0;
-        task[prop] += 1;
+    var next = function() {
         setTimeout(function() {
             doWipe(task);
         }, task.period);
     };
+    var score = function(ok) {
+        var prop = ok ? "win" : "fail";
+        if (!task.hasOwnProperty(prop))
+            task[prop] = 0;
+        task[prop] += 1;
+    };
     if (task.plugin.mustAttachFile(task))
         task.usedFiles.push(file);
+    if ("afterFinish" != task.waitingMode)
+        next();
     task.plugin.getFormData(task, file, proxy).then(function(formData) {
         var o = {
             url: task.plugin.postUrl(task),
@@ -104,10 +108,14 @@ var doWipe = function(task) {
         if (!task.hasOwnProperty(ok ? "winCount" : "failCount"))
             task[ok ? "winCount" : "failCount"] = 0;
         task[ok ? "winCount" : "failCount"] += 1;
-        next(ok);
+        score(ok);
+        if ("afterFinish" == task.waitingMode)
+            next();
     }).catch(function(err) {
         console.error(err.stack || err);
-        next(false);
+        score(false);
+        if ("afterFinish" == task.waitingMode)
+            next();
     });
 };
 
@@ -192,7 +200,9 @@ module.exports.addTask = function(fields) {
             email: !!fields.generateEmail,
             name: !!fields.generateName,
             subject: !!fields.generateSubject
-        }
+        },
+        delayMode: fields.delayMode || "afterStart",
+        fileAttachingMode: fields.fileAttachingMode || "default"
     };
     tasks[task.id] = task;
     if ("true" != fields.start)

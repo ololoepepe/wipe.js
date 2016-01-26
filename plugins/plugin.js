@@ -68,8 +68,10 @@ var Plugin = function(id, title, options) {
         o[fieldNames.name] = task.generator.generate(task, "name");
     if (fieldNames.subject && task.generatorOptions.subject)
         o[fieldNames.subject] = task.generator.generate(task, "subject");
-    if (this.mustAttachFile(task) && fieldNames.file)
+    if ("doNotAttach" != task.fileAttachingMode && fieldNames.file
+        && (this.mustAttachFile(task) || "attach" == task.fileAttachingMode)) {
         o[fieldNames.file] = FSSync.createReadStream(file);
+    }
     if (!task.captcha)
         return Promise.resolve(o);
     var ccq = this.captchaContainerQuery(task);

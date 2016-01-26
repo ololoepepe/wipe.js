@@ -34,7 +34,7 @@ var Solver = function(id, title, options) {
     var _this = this;
     var fileName = Tools.tmpPath() + "/captcha/" + UUID.v4();
     return FS.write(fileName, data).then(function() {
-        return _this.solveImplementation(fileName);
+        return _this.solveImplementation(fileName, data);
     }).then(function(data) {
         FS.remove(fileName).catch(function(err) {
             console.error(err);

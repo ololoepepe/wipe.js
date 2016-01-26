@@ -15,7 +15,8 @@ wipe.buttons = function(parent) {
 
 wipe.addTask = function() {
     var div = wipe.template("addTaskDialog", wipe.model("base"));
-    $("[name='taskOptions'], [name='generatorOptions']", div).buttonset();
+    $("[name='taskOptions'], [name='generatorOptions'], [name='delayMode'], [name='fileAttachingMode']",
+        div).buttonset();
     wipe.showDialog(div, { title: "Add task" }).then(function(result) {
         if (!result)
             return Promise.resolve();

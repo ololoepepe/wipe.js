@@ -13,6 +13,30 @@
                 </tr>
                 <tr>
                     <td class="formLabel">
+                        <b>Site:</b>
+                    </td>
+                    <td class="formField">
+                        <input type="text" name="site" class="formInput" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formLabel">
+                        <b>Board:</b>
+                    </td>
+                    <td class="formField">
+                        <input type="text" name="board" class="formInput" value="b" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formLabel">
+                        <b>Thread:</b>
+                    </td>
+                    <td class="formField">
+                        <input type="number" name="thread" class="formInput" min="0" value="0" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formLabel">
                         <b>Imageboard engine:</b>
                     </td>
                     <td class="formField">
@@ -51,6 +75,27 @@
                 </tr>
                 <tr>
                     <td class="formLabel">
+                        <b>Period (msces):</b>
+                    </td>
+                    <td class="formField">
+                        <input type="number" name="period" class="formInput" min="1" value="30000" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formLabel">
+                        <b>Delay:</b>
+                    </td>
+                    <td class="formField">
+                        <span name="delayMode">
+                            <input id="radioDelayAfterStart" type="radio" name="delayModeButton" checked="true"
+                                   value="afterStart" /><label for="radioDelayAfterStart">After posting started</label>
+                            <input id="radioDelayAfterFinish" type="radio" name="delayModeButton"
+                                   value="afterFinish" /><label for="radioDelayAfterFinish">After posting finshed</label>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formLabel">
                         <b>Text generator:</b>
                     </td>
                     <td class="formField">
@@ -80,34 +125,17 @@
                 </tr>
                 <tr>
                     <td class="formLabel">
-                        <b>Site:</b>
+                        <b>File attaching:</b>
                     </td>
                     <td class="formField">
-                        <input type="text" name="site" class="formInput" />
-                    </td>
-                </tr>
-                <tr>
-                    <td class="formLabel">
-                        <b>Board:</b>
-                    </td>
-                    <td class="formField">
-                        <input type="text" name="board" class="formInput" value="b" />
-                    </td>
-                </tr>
-                <tr>
-                    <td class="formLabel">
-                        <b>Thread:</b>
-                    </td>
-                    <td class="formField">
-                        <input type="number" name="thread" class="formInput" min="0" value="0" />
-                    </td>
-                </tr>
-                <tr>
-                    <td class="formLabel">
-                        <b>Period (msces):</b>
-                    </td>
-                    <td class="formField">
-                        <input type="number" name="period" class="formInput" min="1" value="30000" />
+                        <span name="fileAttachingMode">
+                            <input id="radioFileAttachingDefault" type="radio" name="radioFileAttachingModeButton"
+                                   checked="true" value="default" /><label for="radioFileAttachingDefault">Default</label>
+                            <input id="radioFileAttachingAttach" type="radio" name="radioFileAttachingModeButton"
+                                   value="attach" /><label for="radioFileAttachingAttach">Attach</label>
+                            <input id="radioFileAttachingDoNotAttach" type="radio" name="radioFileAttachingModeButton"
+                                   value="doNotAttach" /><label for="radioFileAttachingDoNotAttach">Do not attach</label>
+                        </span>
                     </td>
                 </tr>
                 <tr>
