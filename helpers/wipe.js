@@ -65,13 +65,19 @@ var selectFile = function(supportedFileTypes, usedFiles) {
 var doWipe = function(task) {
     if (!task || !task.started)
         return;
-    var proxy = (proxies.length > 0) ? selectProxy() : null;
-    var file = selectFile(task.plugin.supportedFileTypes(task), task.usedFiles);
     var next = function() {
         setTimeout(function() {
             doWipe(task);
         }, task.period);
     };
+    if (task.requestCount >= task.maxTotal)
+        return stopTask(task.id);
+    if (!task.hasOwnProperty(requestCount))
+        task.requestCount = 0;
+    if (task.requestCount >= task.maxSimultaneous)
+        return next();
+    var proxy = (proxies.length > 0) ? selectProxy() : null;
+    var file = selectFile(task.plugin.supportedFileTypes(task), task.usedFiles);
     var score = function(ok) {
         var prop = ok ? "win" : "fail";
         if (!task.hasOwnProperty(prop))
@@ -82,6 +88,7 @@ var doWipe = function(task) {
         task.usedFiles.push(file);
     if ("afterFinish" != task.waitingMode)
         next();
+    task.requestCount += 1;
     task.plugin.getFormData(task, file, proxy).then(function(formData) {
         var o = {
             url: task.plugin.postUrl(task),
@@ -97,6 +104,7 @@ var doWipe = function(task) {
         }
         return Tools.post(o);
     }).then(function(body) {
+        task.requestCount -= 1;
         var proxyOk = task.plugin.checkProxy(body, task);
         if (!proxyOk) {
             if (!proxy.hasOwnProperty("failCount"))
@@ -112,6 +120,7 @@ var doWipe = function(task) {
         if ("afterFinish" == task.waitingMode)
             next();
     }).catch(function(err) {
+        task.requestCount -= 1;
         console.error(err.stack || err);
         score(false);
         if ("afterFinish" == task.waitingMode)
@@ -148,6 +157,10 @@ module.exports.tasks = function() {
     return Tools.toArray(tasks);
 };
 
+module.exports.task = function(id) {
+    return tasks[id];
+};
+
 module.exports.addTask = function(fields) {
     var id = fields.id;
     if (!id)
@@ -182,6 +195,12 @@ module.exports.addTask = function(fields) {
     var period = +fields.period;
     if (isNaN(period) || period < 0)
         return Promise.reject("Invalid period");
+    var maxSimultaneous = +fields.maxSimultaneous;
+    if (isNaN(maxSimultaneous) || maxSimultaneous <= 0)
+        return Promise.reject("Invalid maximum simultaneous request count");
+    var maxTotal = +fields.maxTotal;
+    if (isNaN(maxTotal) || maxTotal < 0)
+        return Promise.reject("Invalid maximum total request count");
     var task = {
         id: id,
         plugin: plugin,
@@ -190,6 +209,8 @@ module.exports.addTask = function(fields) {
         started: false,
         usedFiles: [],
         period: period,
+        maxSimultaneous: maxSimultaneous,
+        maxTotal: maxTotal,
         site: fields.site,
         sage: ("true" == fields.sage),
         captcha: captcha,

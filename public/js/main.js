@@ -65,6 +65,33 @@ wipe.showTaskStats = function(btn) {
     div.style.display = div.style.display ? "" : "none";
 };
 
+wipe.updateTask = function(id) {
+    wipe.api("task", { id: id }).then(function(task) {
+        var oldTask = wipe.id(id);
+        var stats = wipe.id("statsButton" + id).checked;
+        task = wipe.template("task", task);
+        wipe.buttons(task);
+        oldTask.parentNode.replaceChild(task, oldTask);
+        if (stats)
+            $("#statsButton" + id).click();
+    }).catch(wipe.handleError);
+};
+
+wipe.updateAll = function() {
+    wipe.api("tasks").then(function(tasks) {
+        tasks.forEach(function(task) {
+            var id = task.id;
+            var oldTask = wipe.id(id);
+            var stats = wipe.id("statsButton" + id).checked;
+            task = wipe.template("task", task);
+            wipe.buttons(task);
+            oldTask.parentNode.replaceChild(task, oldTask);
+            if (stats)
+                $("#statsButton" + id).click();
+        });
+    }).catch(wipe.handleError);
+};
+
 wipe.initializeOnLoad = function() {
     wipe.buttons();
     wipe.api("tasks").then(function(tasks) {

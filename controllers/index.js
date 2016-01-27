@@ -70,6 +70,13 @@ router.post("/action/stopTask", function(req, res) {
     });
 });
 
+router.get("/api/task.json", function(req, res) {
+    var task = Wipe.task(req.query.id);
+    if (!task)
+        return controller.error(res, "Ivalid task ID", true);
+    res.json(mapTask(task));
+});
+
 router.get("/api/tasks.json", function(req, res) {
     res.json(Wipe.tasks().map(mapTask));
 });

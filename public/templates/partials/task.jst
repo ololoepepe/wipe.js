@@ -1,10 +1,11 @@
-<li class="task" data-id="{{=task.id}}" data-started="{{=task.started}}">
+<li id="{{=task.id}}" class="task" data-id="{{=task.id}}" data-started="{{=task.started}}">
     <span class="taskTitle">[{{=task.id}}] ({{=task.plugin.title}})</span>
     <span class="taskActions">
         <button onclick="wipe.startStopTask(this); return false;">{{? task.started}}Stop{{??}}Start{{?}}</button>
         <button onclick="wipe.removeTask(this); return false;">Remove</button>
         <input id="statsButton{{=task.id}}" type="checkbox"
                onclick="wipe.showTaskStats(this);" /><label for="statsButton{{=task.id}}">Stats</label>
+        <button onclick="wipe.updateTask('{{=task.id}}'); return false;">Update</button>
     </span>
     <div name="stats" style="display: none;">
         <b>Win:</b> <span name="win">{{ out += (task.winCount || 0); }}</span>
